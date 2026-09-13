@@ -1,5 +1,5 @@
 {
-  "name": "canvas-lab",
+  "name": "thor-canvas-lab",
   "private": true,
   "version": "0.1.0",
   "description": "A gallery of self-contained web-graphics pieces (WebGPU/WebGL/Canvas2D/SVG/CSS) for the AYN Thor",

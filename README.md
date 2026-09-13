@@ -1,4 +1,6 @@
-# Canvas Lab
+# Thor Canvas Lab
+
+*A creative-coding gallery and technical demo of the Thor ecosystem — the [Thor Viewer](https://github.com/MaterDev/thor-viewer) shell and the [turnip-kgsl-shim](https://github.com/MaterDev/turnip-kgsl-shim) GPU stack.*
 
 A gallery of self-contained web-graphics pieces — WebGPU, WebGL, Canvas2D, SVG, CSS — with no build step and no dependencies. Drop a folder in `pieces/`, and it shows up.
 
