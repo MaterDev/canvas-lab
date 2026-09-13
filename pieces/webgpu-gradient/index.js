@@ -4,7 +4,11 @@ export async function create(stage) {
   if (!navigator.gpu) throw new Error('WebGPU not available in this browser');
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) throw new Error('No WebGPU adapter');
-  const device = await adapter.requestDevice();
+  const info = adapter.info || {};
+  const soft = adapter.isFallbackAdapter || /swiftshader|llvmpipe|software|cpu/i.test((info.architecture||"")+" "+(info.vendor||"")+" "+(info.description||""));
+  console.log("[webgpu-gradient] adapter:", JSON.stringify({ vendor: info.vendor, arch: info.architecture, desc: info.description, fallback: adapter.isFallbackAdapter }));
+  if (soft) throw new Error("Only a software WebGPU adapter is available here (it would freeze this viewer). Open Canvas Lab in real Chrome for GPU WebGPU.");
+  const device = await Promise.race([adapter.requestDevice(), new Promise((_, rej) => setTimeout(() => rej(new Error("WebGPU device request timed out")), 8000))]);
   const ctx = stage.canvas.getContext('webgpu');
   const format = navigator.gpu.getPreferredCanvasFormat();
   const configure = () => ctx.configure({ device, format, alphaMode: 'opaque' });
