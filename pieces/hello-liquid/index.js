@@ -16,7 +16,8 @@ export function create(stage) {
   const Q = { cap: 1440, octaves: 4, lasers: 5, tag: 'gpu' };
 
   let contextLost = false;
-  stage.canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); contextLost = true; console.error('[hello-liquid] WebGL context lost'); stage.container.dispatchEvent(new CustomEvent('piece-error', { bubbles: true, detail: 'WebGL context lost (renderer too slow?)' })); });
+  const onLost = (e) => { e.preventDefault(); contextLost = true; console.error('[hello-liquid] WebGL context lost'); stage.canvas.dispatchEvent(new CustomEvent('piece-error', { bubbles: true, detail: 'WebGL context lost (renderer too slow?)' })); };
+  stage.canvas.addEventListener('webglcontextlost', onLost);
 
   // crisp DOM caption over the shader
   const cap = document.createElement('div');
@@ -134,6 +135,6 @@ export function create(stage) {
 
   return {
     resize,
-    destroy() { cancelAnimationFrame(raf); cap.remove(); if (!contextLost) gl.getExtension('WEBGL_lose_context')?.loseContext(); },
+    destroy() { cancelAnimationFrame(raf); cap.remove(); stage.canvas.removeEventListener('webglcontextlost', onLost); if (!contextLost) gl.getExtension('WEBGL_lose_context')?.loseContext(); },
   };
 }

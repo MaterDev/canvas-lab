@@ -1,14 +1,7 @@
 // WebGPU Gradient — webgpu. Full-screen triangle + animated WGSL fragment shader.
-// Requires a GPU-backed browser (open http://127.0.0.1:4860/ in real Chrome); headless renders black.
+import { getGPU, fpsMeter } from '/gpu.js';
 export async function create(stage) {
-  if (!navigator.gpu) throw new Error('WebGPU not available in this browser');
-  const adapter = await navigator.gpu.requestAdapter();
-  if (!adapter) throw new Error('No WebGPU adapter');
-  const info = adapter.info || {};
-  const soft = adapter.isFallbackAdapter || /swiftshader|llvmpipe|software|cpu/i.test((info.architecture||"")+" "+(info.vendor||"")+" "+(info.description||""));
-  console.log("[webgpu-gradient] adapter:", JSON.stringify({ vendor: info.vendor, arch: info.architecture, desc: info.description, fallback: adapter.isFallbackAdapter }));
-  if (soft) throw new Error("Only a software WebGPU adapter is available here (it would freeze this viewer). Open Canvas Lab in real Chrome for GPU WebGPU.");
-  const device = await Promise.race([adapter.requestDevice(), new Promise((_, rej) => setTimeout(() => rej(new Error("WebGPU device request timed out")), 8000))]);
+  const { device, desc } = await getGPU({ label: 'webgpu-gradient' });
   const ctx = stage.canvas.getContext('webgpu');
   const format = navigator.gpu.getPreferredCanvasFormat();
   const configure = () => ctx.configure({ device, format, alphaMode: 'opaque' });
@@ -30,15 +23,21 @@ export async function create(stage) {
   const ubuf = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
   const pipeline = device.createRenderPipeline({ layout: 'auto', vertex: { module: shader, entryPoint: 'vs' }, fragment: { module: shader, entryPoint: 'fs', targets: [{ format }] }, primitive: { topology: 'triangle-list' } });
   const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: ubuf } }] });
+  const tick = fpsMeter('webgpu-gradient', () => `@ ${stage.canvas.width}x${stage.canvas.height} (${desc || 'gpu'})`);
   let raf, t = 0, dead = false;
   function frame() {
+    if (dead) return;
     device.queue.writeBuffer(ubuf, 0, new Float32Array([t, stage.canvas.width, stage.canvas.height]));
     const enc = device.createCommandEncoder();
     const pass = enc.beginRenderPass({ colorAttachments: [{ view: ctx.getCurrentTexture().createView(), clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: 'clear', storeOp: 'store' }] });
     pass.setPipeline(pipeline); pass.setBindGroup(0, bind); pass.draw(3); pass.end();
     device.queue.submit([enc.finish()]);
-    t += 0.016; if (!dead) raf = requestAnimationFrame(frame);
+    t += 0.016; tick(); raf = requestAnimationFrame(frame);
   }
-  frame();
-  return { resize: configure, destroy() { dead = true; cancelAnimationFrame(raf); device.destroy?.(); } };
+  console.log(`[webgpu-gradient] ready ${stage.canvas.width}x${stage.canvas.height}`);
+  raf = requestAnimationFrame(frame);
+  return {
+    resize() { configure(); },
+    destroy() { dead = true; cancelAnimationFrame(raf); try { ubuf.destroy(); device.destroy(); } catch {} },
+  };
 }

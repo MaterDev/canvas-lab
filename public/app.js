@@ -52,7 +52,12 @@ function showFallback(id, reason) {
   box.innerHTML = '<div style="color:var(--accent);letter-spacing:.2em">"' + id + '" COULD NOT RUN HERE</div><div style="margin-top:8px;color:var(--ink-dim);font-size:12px">' + reason.replace(/</g, '&lt;') + '</div>' + gpuNote;
   emptyEl.appendChild(box); emptyEl.classList.remove('hidden');
 }
-stageEl.addEventListener('piece-error', e => showFallback(activeId || '?', e.detail || 'runtime error'));
+stageEl.addEventListener('piece-error', e => {
+  // Only the current piece may report errors; a discarded canvas from a previous piece can still fire
+  // its 'context lost' listener seconds later and must not tear down the piece that replaced it.
+  if (!stage || e.target !== stage.canvas) return; // pieces dispatch on their own canvas
+  showFallback(activeId || '?', e.detail || 'runtime error');
+});
 
 // ---------- hot reload: the server pushes an event when pieces/ or public/ change ----------
 (function hotReload() {
