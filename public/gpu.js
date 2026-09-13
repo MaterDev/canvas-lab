@@ -58,7 +58,8 @@ async function timeProbe(device) {
 // composite a webgpu-context canvas from that adapter (it renders blank). So instead of drawing to a
 // 'webgpu' context we render to an offscreen GPU texture, read it back, and blit into a normal '2d'
 // canvas — which composites and screenshots fine. On real Chrome (native adapter) the same code path
-// works too. Readback at 832x468 measured ~140fps here, well above the viewer's frame budget.
+// works too. The render+readback loop measured ~140fps at 768x432 uncapped; in the gallery pieces run
+// requestAnimationFrame-capped at a steady 60fps even at fullscreen (heavy raymarch piece: p95 16.8ms).
 //
 //   const p = createPresenter(device, stage);       // owns stage.canvas as a 2d canvas
 //   function frame(){ renderInto(p.begin());        // p.begin() -> GPUTextureView to draw into
