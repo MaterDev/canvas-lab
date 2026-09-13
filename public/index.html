@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#05080c">
+<title>Canvas Lab</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%2305080c%27/%3E%3Ccircle cx=%278%27 cy=%278%27 r=%274%27 fill=%27none%27 stroke=%27%235ee0ff%27 stroke-width=%271.5%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<!-- full-viewport stage; the active piece renders here -->
+<div id="stage"></div>
+<div id="empty">Select a piece from the menu ↙</div>
+
+<!-- bottom-left launchers: open upward, then expand across (clear of the viewer shell) -->
+<div id="dock">
+  <button id="navToggle" class="fab" title="Gallery" aria-label="Gallery">▚</button>
+</div>
+<div id="dockR"><button id="notesToggle" class="fab hidden" title="Notes" aria-label="Notes">✎</button></div>
+
+<section id="nav" class="panel hidden" aria-label="Gallery">
+  <header><span class="brand">CANVAS&nbsp;LAB</span><span id="count" class="count"></span></header>
+  <input id="search" type="search" placeholder="search title, tag, type…" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <div id="filters"></div>
+  <ul id="list"></ul>
+</section>
+
+<section id="notes" class="panel hidden" aria-label="Notes">
+  <header><span id="notesTitle" class="brand">NOTES</span><span id="notesState" class="count"></span></header>
+  <div id="meta" class="meta"></div>
+  <textarea id="notesText" placeholder="Notes for this piece (markdown). Saved to notes.md."></textarea>
+  <div class="row"><button id="notesSave" class="btn">Save notes</button></div>
+</section>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

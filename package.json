@@ -1,0 +1,14 @@
+{
+  "name": "canvas-lab",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A gallery of self-contained web-graphics pieces (WebGPU/WebGL/Canvas2D/SVG/CSS) for the AYN Thor",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "new": "node tools/new-piece.mjs",
+    "test": "node test/smoke.mjs"
+  },
+  "license": "MIT"
+}

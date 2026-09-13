@@ -1,0 +1,7 @@
+{
+  "title": "GL Gradient Triangle",
+  "type": "webgl",
+  "tags": ["webgl", "shader", "hello-world"],
+  "created": "2026-09-13",
+  "description": "A spinning gradient triangle in raw WebGL2 — the minimal shader pipeline, with context cleanup."
+}

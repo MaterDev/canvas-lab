@@ -1,0 +1,7 @@
+{
+  "title": "Plasma Field",
+  "type": "canvas2d",
+  "tags": ["procedural", "color", "warmup"],
+  "created": "2026-09-13",
+  "description": "Classic sine-plasma on a 2D canvas; a baseline for the stage + rAF loop."
+}

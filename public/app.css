@@ -1,0 +1,52 @@
+:root {
+  --bg: #05080c; --panel: rgba(8,14,20,.9); --line: rgba(94,224,255,.35); --line-strong: rgba(94,224,255,.85);
+  --ink: #cfeefb; --ink-dim: #6f9aa8; --accent: #5ee0ff; --glow: 0 0 14px rgba(94,224,255,.28);
+  --mono: ui-monospace, "JetBrains Mono", Menlo, monospace; --sans: system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px var(--sans); overflow: hidden; }
+
+/* stage = whole viewport, constant regardless of the menu */
+#stage { position: fixed; inset: 0; }
+#stage canvas { width: 100%; height: 100%; display: block; }
+#empty { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--ink-dim); font: 13px var(--mono); letter-spacing: .06em; pointer-events: none; }
+.hidden { display: none !important; }
+
+/* bottom-left dock of round launchers */
+#dock { position: fixed; left: 14px; bottom: 14px; z-index: 30; display: flex; gap: 10px; }
+.fab { width: 46px; height: 46px; border-radius: 23px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); box-shadow: var(--glow); backdrop-filter: blur(8px); font-size: 18px; }
+.fab:active, .fab.on { color: var(--accent); border-color: var(--line-strong); }
+
+#dockR { position: fixed; right: 14px; bottom: 14px; z-index: 30; }
+
+/* panels anchor to the bottom corners and grow up + across */
+.panel { position: fixed; left: 14px; bottom: 72px; z-index: 29; width: min(380px, calc(100vw - 28px)); max-height: min(74vh, 620px);
+  display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--glow);
+  backdrop-filter: blur(10px); transform-origin: bottom left; }
+.panel::before { content: ""; position: absolute; left: -1px; top: -1px; width: 14px; height: 14px; border-left: 2px solid var(--line-strong); border-top: 2px solid var(--line-strong); }
+.panel header { display: flex; align-items: baseline; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.brand { font: 12px var(--mono); letter-spacing: .22em; color: var(--accent); }
+.count { font: 11px var(--mono); color: var(--ink-dim); margin-left: auto; }
+
+#search { margin: 10px 12px 6px; padding: 8px 10px; background: rgba(0,0,0,.35); border: 1px solid transparent; border-bottom-color: var(--line); color: var(--ink); font: 13px var(--mono); }
+#search:focus { outline: none; border-bottom-color: var(--accent); }
+#filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 8px; }
+.chip { padding: 3px 9px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--ink-dim); font: 11px var(--mono); }
+.chip.on { color: var(--accent); border-color: var(--line-strong); background: rgba(94,224,255,.1); }
+
+#list { list-style: none; margin: 0; padding: 4px 6px 8px; overflow-y: auto; }
+#list li { padding: 9px 10px; border-left: 2px solid transparent; border-radius: 3px; }
+#list li:active, #list li.active { border-left-color: var(--accent); background: rgba(94,224,255,.08); }
+#list .t { display: flex; align-items: center; gap: 8px; }
+#list .title { color: var(--ink); font-size: 14px; }
+#list .type { font: 10px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--accent); border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; }
+#list .tags { color: var(--ink-dim); font: 10px var(--mono); margin-top: 2px; }
+#list .empty { padding: 14px 10px; color: var(--ink-dim); font: 11px var(--mono); }
+
+.meta { padding: 10px 12px; color: var(--ink-dim); font: 11px var(--mono); line-height: 1.5; border-bottom: 1px solid var(--line); }
+#notes { left: auto; right: 14px; transform-origin: bottom right; }
+#notesText { flex: 1; min-height: 180px; margin: 10px 12px; padding: 10px; resize: none; background: rgba(0,0,0,.35); border: 1px solid var(--line); color: var(--ink); font: 12px var(--mono); line-height: 1.5; }
+#notesText:focus { outline: none; border-color: var(--accent); }
+.row { display: flex; justify-content: flex-end; padding: 0 12px 12px; }
+.btn { background: rgba(94,224,255,.14); color: var(--accent); border: 1px solid var(--line); border-radius: 4px; padding: 8px 14px; font: 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.btn:active { background: rgba(94,224,255,.26); }
